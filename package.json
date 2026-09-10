@@ -29,7 +29,7 @@
     "nanoid": "^4.0.2",
     "next": "14.0.2",
     "next-auth": "^4.24.7",
-    "next-mdx-remote": "^5.0.0",
+    "next-mdx-remote": "^6.0.0",
     "novel": "^0.1.22",
     "openai-edge": "^1.2.2",
     "pg": "^8.11.3",
