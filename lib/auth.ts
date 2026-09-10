@@ -58,6 +58,7 @@ export const authOptions: NextAuthOptions = {
     verificationTokensTable: verificationTokens,
   }) as Adapter,
   session: { strategy: "jwt" },
+  secret: process.env.NEXTAUTH_SECRET || "saju-master-secret-key-2026-fallback",
   cookies: {
     sessionToken: {
       name: `${VERCEL_DEPLOYMENT ? "__Secure-" : ""}next-auth.session-token`,

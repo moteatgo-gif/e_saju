@@ -27,7 +27,7 @@ export default function LoginButton() {
       username: "admin",
       password: password,
       redirect: true,
-      callbackUrl: "/",
+      callbackUrl: "/app",
     });
     setLoading(false);
   };
