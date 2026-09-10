@@ -5,12 +5,36 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { Adapter } from "next-auth/adapters";
 import { accounts, sessions, users, verificationTokens } from "./schema";
 
+import CredentialsProvider from "next-auth/providers/credentials";
+
 const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;
 export const authOptions: NextAuthOptions = {
   providers: [
+    CredentialsProvider({
+      name: "관리자 로그인",
+      credentials: {
+        username: { label: "아이디", type: "text", placeholder: "admin" },
+        password: { label: "비밀번호", type: "password", placeholder: "1234" }
+      },
+      async authorize(credentials) {
+        if (
+          credentials?.username === "admin" &&
+          (credentials?.password === "1234" || credentials?.password === "admin1234")
+        ) {
+          return {
+            id: "master_admin",
+            name: "마스터 관리자",
+            email: "admin@saju.com",
+            username: "admin",
+            image: "https://avatar.vercel.sh/admin"
+          };
+        }
+        return null;
+      }
+    }),
     GitHubProvider({
-      clientId: process.env.AUTH_GITHUB_ID as string,
-      clientSecret: process.env.AUTH_GITHUB_SECRET as string,
+      clientId: (process.env.AUTH_GITHUB_ID as string) || "dummy_id",
+      clientSecret: (process.env.AUTH_GITHUB_SECRET as string) || "dummy_secret",
       profile(profile) {
         return {
           id: profile.id.toString(),

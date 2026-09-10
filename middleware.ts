@@ -39,15 +39,20 @@ export default async function middleware(req: NextRequest) {
   }`;
 
   // rewrites for app pages
-  if (hostname == `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) {
+  if (
+    hostname == `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||
+    path.startsWith("/app") ||
+    path.startsWith("/login")
+  ) {
     const session = await getToken({ req });
     if (!session && path !== "/login") {
       return NextResponse.redirect(new URL("/login", req.url));
     } else if (session && path == "/login") {
       return NextResponse.redirect(new URL("/", req.url));
     }
+    const cleanPath = path.startsWith("/app") ? path.replace("/app", "") : path;
     return NextResponse.rewrite(
-      new URL(`/app${path === "/" ? "" : path}`, req.url),
+      new URL(`/app${cleanPath === "" ? "/" : cleanPath}`, req.url),
     );
   }
 
