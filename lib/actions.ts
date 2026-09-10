@@ -32,6 +32,17 @@ export const createSite = async (formData: FormData) => {
   const subdomain = formData.get("subdomain") as string;
 
   try {
+    await db
+      .insert(users)
+      .values({
+        id: session.user.id,
+        name: session.user.name || "마스터 관리자",
+        email: session.user.email || "admin@saju.com",
+        username: session.user.username || "admin",
+        image: session.user.image || "https://avatar.vercel.sh/admin",
+      })
+      .onConflictDoNothing();
+
     const [response] = await db
       .insert(sites)
       .values({

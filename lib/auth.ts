@@ -21,16 +21,31 @@ export const authOptions: NextAuthOptions = {
           credentials?.username === "admin" &&
           (credentials?.password === "1234" || credentials?.password === "admin1234")
         ) {
+          try {
+            await db
+              .insert(users)
+              .values({
+                id: "master_admin",
+                name: "마스터 관리자",
+                email: "admin@saju.com",
+                username: "admin",
+                image: "https://avatar.vercel.sh/admin",
+              })
+              .onConflictDoNothing();
+          } catch (e) {
+            console.error("Master admin upsert error:", e);
+          }
+
           return {
             id: "master_admin",
             name: "마스터 관리자",
             email: "admin@saju.com",
             username: "admin",
-            image: "https://avatar.vercel.sh/admin"
+            image: "https://avatar.vercel.sh/admin",
           };
         }
         return null;
-      }
+      },
     }),
     GitHubProvider({
       clientId: (process.env.AUTH_GITHUB_ID as string) || "dummy_id",
