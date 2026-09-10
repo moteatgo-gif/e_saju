@@ -44,7 +44,10 @@ export default async function middleware(req: NextRequest) {
     path.startsWith("/app") ||
     path.startsWith("/login")
   ) {
-    const session = await getToken({ req });
+    const session = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET || "saju-master-secret-key-2026-fallback",
+    });
     if (!session && path !== "/login") {
       return NextResponse.redirect(new URL("/login", req.url));
     } else if (session && path == "/login") {
