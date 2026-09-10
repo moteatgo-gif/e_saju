@@ -7,28 +7,10 @@ import { getPostsForSite, getSiteData } from "@/lib/fetchers";
 import Image from "next/image";
 import db from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
-  const allSites = await db.query.sites.findMany({
-    // feel free to remove this filter if you want to generate paths for all sites
-    where: (sites, { eq }) => eq(sites.subdomain, "demo"),
-    columns: {
-      subdomain: true,
-      customDomain: true,
-    },
-  });
-
-  const allPaths = allSites
-    .flatMap(({ subdomain, customDomain }) => [
-      subdomain && {
-        domain: `${subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
-      },
-      customDomain && {
-        domain: customDomain,
-      },
-    ])
-    .filter(Boolean);
-
-  return allPaths;
+  return [];
 }
 
 export default async function SiteHomePage({
