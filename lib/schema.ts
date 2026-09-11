@@ -122,6 +122,24 @@ export const sites = pgTable(
     message404: text("message404").default(
       "Blimey! You''ve found a page that doesn''t exist.",
     ),
+    // 타이탄사주 테넌트 확장 필드
+    companyName: text("companyName"),
+    representative: text("representative"),
+    address: text("address"),
+    businessNumber: text("businessNumber"),
+    mailOrderNumber: text("mailOrderNumber"),
+    privacyOfficer: text("privacyOfficer"),
+    email: text("email"),
+    phone: text("phone"),
+    customerServiceUrl: text("customerServiceUrl"),
+    footerExtra: text("footerExtra"),
+    theme: text("theme").default("DARK"),
+    tossClientKey: text("tossClientKey"),
+    tossSecretKey: text("tossSecretKey"),
+    kakaoChannelId: text("kakaoChannelId"),
+    solapiApiKey: text("solapiApiKey"),
+    solapiApiSecret: text("solapiApiSecret"),
+    solapiPfId: text("solapiPfId"),
     createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
     updatedAt: timestamp("updatedAt", { mode: "date" })
       .notNull()
@@ -137,6 +155,97 @@ export const sites = pgTable(
     };
   },
 );
+
+export const inviteCodes = pgTable("inviteCodes", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  code: text("code").notNull().unique(),
+  issuerId: text("issuerId").references(() => users.id, { onDelete: "cascade" }),
+  redeemedBy: text("redeemedBy").references(() => users.id),
+  maxUses: integer("maxUses").default(1).notNull(),
+  usedCount: integer("usedCount").default(0).notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
+  role: text("role").default("TENANT").notNull(), // TENANT | INSTRUCTOR
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
+  expiresAt: timestamp("expiresAt", { mode: "date" }),
+});
+
+export const products = pgTable("products", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  siteId: text("siteId")
+    .notNull()
+    .references(() => sites.id, { onDelete: "cascade" }),
+  slug: text("slug").notNull(),
+  title: text("title").notNull(),
+  category: text("category").default("개인 사주"),
+  description: text("description"),
+  originalPrice: integer("originalPrice").default(39900).notNull(),
+  discountedPrice: integer("discountedPrice").default(29900).notNull(),
+  creditCost: integer("creditCost").default(29900).notNull(),
+  characterName: text("characterName").default("도령"),
+  characterImageUrl: text("characterImageUrl"),
+  characterPersona: text("characterPersona").default("mz"),
+  characterEmpathy: text("characterEmpathy").default("F"),
+  accentColor: text("accentColor").default("#D62221"),
+  ctaBgColor: text("ctaBgColor").default("#FB9DF3"),
+  ctaTextColor: text("ctaTextColor").default("#000000"),
+  ctaLabel: text("ctaLabel").default("도령 찾으러 가기"),
+  waitVideoUrl: text("waitVideoUrl"),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt", { mode: "date" })
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export const funnelSteps = pgTable("funnelSteps", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  productId: text("productId")
+    .notNull()
+    .references(() => products.id, { onDelete: "cascade" }),
+  order: integer("order").notNull(),
+  stepKey: text("stepKey").notNull(),
+  type: text("type").notNull(), // INTRO | IMAGE_SCREEN | FORM | FREEFORM | WAIT | OUTRO
+  configJson: text("configJson").notNull(), // JSON 형태의 세부 연출/질문/비디오 설정
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const orders = pgTable("orders", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  siteId: text("siteId")
+    .notNull()
+    .references(() => sites.id, { onDelete: "cascade" }),
+  productId: text("productId")
+    .notNull()
+    .references(() => products.id),
+  orderNumber: text("orderNumber").notNull().unique(),
+  customerName: text("customerName").notNull(),
+  customerPhone: text("customerPhone"),
+  customerEmail: text("customerEmail"),
+  birthDate: text("birthDate"),
+  birthTime: text("birthTime"),
+  isLunar: boolean("isLunar").default(false),
+  gender: text("gender"),
+  userStory: text("userStory"),
+  amount: integer("amount").notNull(),
+  paymentStatus: text("paymentStatus").default("PENDING").notNull(), // PENDING | PAID | FAILED | REFUNDED
+  paymentKey: text("paymentKey"),
+  paymentMethod: text("paymentMethod").default("TOSS"),
+  reportContent: text("reportContent"), // AI가 생성한 사주 리포트
+  reportStatus: text("reportStatus").default("WAITING").notNull(), // WAITING | GENERATING | COMPLETED | FAILED
+  notifiedAt: timestamp("notifiedAt", { mode: "date" }),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt", { mode: "date" })
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
 
 export const posts = pgTable(
   "posts",
@@ -179,6 +288,21 @@ export const posts = pgTable(
   },
 );
 
+export const productsRelations = relations(products, ({ one, many }) => ({
+  site: one(sites, { references: [sites.id], fields: [products.siteId] }),
+  steps: many(funnelSteps),
+  orders: many(orders),
+}));
+
+export const funnelStepsRelations = relations(funnelSteps, ({ one }) => ({
+  product: one(products, { references: [products.id], fields: [funnelSteps.productId] }),
+}));
+
+export const ordersRelations = relations(orders, ({ one }) => ({
+  site: one(sites, { references: [sites.id], fields: [orders.siteId] }),
+  product: one(products, { references: [products.id], fields: [orders.productId] }),
+}));
+
 export const postsRelations = relations(posts, ({ one }) => ({
   site: one(sites, { references: [sites.id], fields: [posts.siteId] }),
   user: one(users, { references: [users.id], fields: [posts.userId] }),
@@ -186,6 +310,8 @@ export const postsRelations = relations(posts, ({ one }) => ({
 
 export const sitesRelations = relations(sites, ({ one, many }) => ({
   posts: many(posts),
+  products: many(products),
+  orders: many(orders),
   user: one(users, { references: [users.id], fields: [sites.userId] }),
 }));
 
@@ -206,4 +332,9 @@ export const userRelations = relations(users, ({ many }) => ({
 
 export type SelectSite = typeof sites.$inferSelect;
 export type SelectPost = typeof posts.$inferSelect;
+export type SelectProduct = typeof products.$inferSelect;
+export type SelectFunnelStep = typeof funnelSteps.$inferSelect;
+export type SelectOrder = typeof orders.$inferSelect;
+export type SelectInviteCode = typeof inviteCodes.$inferSelect;
 export type SelectExample = typeof examples.$inferSelect;
+

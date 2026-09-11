@@ -72,6 +72,14 @@ module.exports = {
             inverted: "#000000", // black
           },
         },
+        // 타이탄사주 원본 테마 컬러
+        "seal-red": "#D62221",
+        "seal-bg": "#0d0f12",
+        "seal-fg": "#f5f5f5",
+        "seal-hairline": "rgba(255, 255, 255, 0.12)",
+        "saju-ink": "#121418",
+        "saju-gold": "#F59E0B",
+        "saju-pink": "#FB9DF3",
       },
       boxShadow: {
         // light

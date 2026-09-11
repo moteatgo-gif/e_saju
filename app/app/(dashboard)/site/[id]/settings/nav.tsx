@@ -24,6 +24,16 @@ export default function SiteSettingsNav() {
       href: `/site/${id}/settings/appearance`,
       segment: "appearance",
     },
+    {
+      name: "사업자/푸터 정보",
+      href: `/site/${id}/settings/footer`,
+      segment: "footer",
+    },
+    {
+      name: "결제/카카오 연동",
+      href: `/site/${id}/settings/payment`,
+      segment: "payment",
+    },
   ];
 
   return (

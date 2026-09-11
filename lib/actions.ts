@@ -432,3 +432,142 @@ export const editUser = async (
     }
   }
 };
+
+// 속삭임사주 7대 정품 퍼널 상품을 내 사이트로 1초 만에 자동 복제하는 액션
+export const cloneOriginalSajuProducts = withSiteAuth(
+  async (_: any, site: SelectSite) => {
+    const session = await getSession();
+    if (!session?.user.id) {
+      return { error: "Not authenticated" };
+    }
+
+    const defaultFunnels = [
+      {
+        slug: "siwoo_mz_dating",
+        title: "시우도령의 MZ 연애 사주",
+        category: "연애 사주",
+        description: "여기가 요즘 핫한 연애 신당이라고...? 내 운명은 언제?",
+        originalPrice: 39900,
+        discountedPrice: 29900,
+        characterName: "시우도령",
+        characterPersona: "mz",
+        characterEmpathy: "F",
+        accentColor: "#D62221",
+        ctaBgColor: "#FB9DF3",
+        ctaLabel: "도령 찾으러 가기",
+        image: "https://loisznqcftphaidyqtsp.supabase.co/storage/v1/object/public/character/cmpqww89z000004jxfuo004e7/f53f57a4-8829-4188-af77-f31743b31371.png",
+      },
+      {
+        slug: "hoo_lifetime",
+        title: "후도령의 평생사주",
+        category: "평생 사주",
+        description: "인생 전반의 흐름과 대운/세운을 명쾌하게 짚어내는 정통 평생사주",
+        originalPrice: 49900,
+        discountedPrice: 34900,
+        characterName: "후도령",
+        characterPersona: "traditional",
+        characterEmpathy: "T",
+        accentColor: "#F59E0B",
+        ctaBgColor: "#FDE68A",
+        ctaLabel: "내 평생운명 확인하기",
+        image: "https://loisznqcftphaidyqtsp.supabase.co/storage/v1/object/public/site-assets/sites/cmpqwz1lw000005jpx2sv4gqb/6206d1eb-ff00-4310-b702-e662a6a9b1f8.jpg",
+      },
+      {
+        slug: "hongyeon_reunion",
+        title: "홍연보살 귀연재회",
+        category: "재회 사주",
+        description: "재회만 38년, 그 촉을 그대로 옮긴 무당 사주 (연락 오는 시기 명통)",
+        originalPrice: 49900,
+        discountedPrice: 29900,
+        characterName: "홍연보살",
+        characterPersona: "shaman",
+        characterEmpathy: "F",
+        accentColor: "#DC2626",
+        ctaBgColor: "#FECACA",
+        ctaLabel: "인연의 끈 확인하기",
+        image: "https://loisznqcftphaidyqtsp.supabase.co/storage/v1/object/public/site-assets/sites/cmpqwz1lw000005jpx2sv4gqb/16f85d75-fe2d-44bc-93cf-a3e12d499ad7.jpg",
+      },
+      {
+        slug: "dana_match",
+        title: "단아선녀 사주궁합",
+        category: "궁합 사주",
+        description: "싸우는 이유부터 화해시키는 말, 스킨십까지 꿰뚫어 보는 궁합 사용설명서",
+        originalPrice: 45000,
+        discountedPrice: 29900,
+        characterName: "단아선녀",
+        characterPersona: "fairy",
+        characterEmpathy: "F",
+        accentColor: "#EC4899",
+        ctaBgColor: "#FBCFE8",
+        ctaLabel: "우리 속궁합 보기",
+        image: "https://loisznqcftphaidyqtsp.supabase.co/storage/v1/object/public/site-assets/sites/cmpqwz1lw000005jpx2sv4gqb/f92c9ba5-0792-48f4-b287-8fb90b42f189.jpg",
+      },
+      {
+        slug: "wolho_salpuri",
+        title: "월호선 살 풀이 사주",
+        category: "납량특집",
+        description: "꼬인 인생, 액운/신살을 직설적으로 쳐내는 호러/납량특집 살풀이 비방",
+        originalPrice: 39900,
+        discountedPrice: 29900,
+        characterName: "월호선",
+        characterPersona: "dark",
+        characterEmpathy: "T",
+        accentColor: "#7C3AED",
+        ctaBgColor: "#DDD6FE",
+        ctaLabel: "살풀이 시작하기",
+        image: "https://loisznqcftphaidyqtsp.supabase.co/storage/v1/object/public/site-assets/sites/cmpqwz1lw000005jpx2sv4gqb/788b9a81-a9c2-4998-bccb-d328e141239a.png",
+      },
+      {
+        slug: "wolryeong_reunion",
+        title: "월령신녀의 재회사주",
+        category: "재회 사주",
+        description: "연락 오는 정확한 주차 명시, 먼저 연락하면 망하는 금지일 지정",
+        originalPrice: 39900,
+        discountedPrice: 29900,
+        characterName: "월령신녀",
+        characterPersona: "cold",
+        characterEmpathy: "T",
+        accentColor: "#2563EB",
+        ctaBgColor: "#BFDBFE",
+        ctaLabel: "연락 시기 조회",
+        image: "https://loisznqcftphaidyqtsp.supabase.co/storage/v1/object/public/site-assets/sites/cmpqwz1lw000005jpx2sv4gqb/6206d1eb-ff00-4310-b702-e662a6a9b1f8.jpg",
+      },
+      {
+        slug: "moonlight_match",
+        title: "달빛 궁합소 99%",
+        category: "궁합 사주",
+        description: "우리는 과연 어떤 사이일까? 서로를 끌어당기는 감성 궁합 풀이",
+        originalPrice: 35000,
+        discountedPrice: 24900,
+        characterName: "달빛선녀",
+        characterPersona: "emotional",
+        characterEmpathy: "F",
+        accentColor: "#F43F5E",
+        ctaBgColor: "#FECDD3",
+        ctaLabel: "인연 지수 확인",
+        image: "https://loisznqcftphaidyqtsp.supabase.co/storage/v1/object/public/site-assets/sites/cmpqwz1lw000005jpx2sv4gqb/16f85d75-fe2d-44bc-93cf-a3e12d499ad7.jpg",
+      },
+    ];
+
+    try {
+      for (const item of defaultFunnels) {
+        await db.insert(posts).values({
+          siteId: site.id,
+          userId: session.user.id,
+          title: item.title,
+          description: item.description,
+          slug: item.slug,
+          image: item.image,
+          published: true,
+          content: JSON.stringify(item),
+        });
+      }
+
+      revalidateTag(`${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-posts`);
+      return { success: true, count: defaultFunnels.length };
+    } catch (e: any) {
+      return { error: e.message };
+    }
+  },
+);
+

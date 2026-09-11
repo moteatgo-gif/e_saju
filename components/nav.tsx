@@ -80,24 +80,30 @@ export default function Nav({ children }: { children: ReactNode }) {
     if (segments[0] === "site" && id) {
       return [
         {
-          name: "Back to All Sites",
+          name: "전체 사이트 목록",
           href: "/sites",
           icon: <ArrowLeft width={18} />,
         },
         {
-          name: "Posts",
+          name: "퍼널 상품 관리",
           href: `/site/${id}`,
           isActive: segments.length === 2,
           icon: <Newspaper width={18} />,
         },
         {
-          name: "Analytics",
-          href: `/site/${id}/analytics`,
-          isActive: segments.includes("analytics"),
+          name: "주문 및 결제 내역",
+          href: `/site/${id}/orders`,
+          isActive: segments.includes("orders"),
           icon: <BarChart3 width={18} />,
         },
         {
-          name: "Settings",
+          name: "방문자 통계",
+          href: `/site/${id}/analytics`,
+          isActive: segments.includes("analytics"),
+          icon: <LayoutDashboard width={18} />,
+        },
+        {
+          name: "사이트/사업자 설정",
           href: `/site/${id}/settings`,
           isActive: segments.includes("settings"),
           icon: <Settings width={18} />,
@@ -106,18 +112,18 @@ export default function Nav({ children }: { children: ReactNode }) {
     } else if (segments[0] === "post" && id) {
       return [
         {
-          name: "Back to All Posts",
+          name: "상품 목록으로 돌아가기",
           href: siteId ? `/site/${siteId}` : "/sites",
           icon: <ArrowLeft width={18} />,
         },
         {
-          name: "Editor",
+          name: "퍼널 빌더 편집기",
           href: `/post/${id}`,
           isActive: segments.length === 2,
           icon: <Edit3 width={18} />,
         },
         {
-          name: "Settings",
+          name: "퍼널 세부 설정",
           href: `/post/${id}/settings`,
           isActive: segments.includes("settings"),
           icon: <Settings width={18} />,
@@ -126,19 +132,25 @@ export default function Nav({ children }: { children: ReactNode }) {
     }
     return [
       {
-        name: "Overview",
+        name: "대시보드 개요",
         href: "/",
         isActive: segments.length === 0,
         icon: <LayoutDashboard width={18} />,
       },
       {
-        name: "Sites",
+        name: "내 분양 사이트",
         href: "/sites",
         isActive: segments[0] === "sites",
         icon: <Globe width={18} />,
       },
       {
-        name: "Settings",
+        name: "초대코드 발급 관리",
+        href: "/invites",
+        isActive: segments[0] === "invites",
+        icon: <Megaphone width={18} />,
+      },
+      {
+        name: "계정 환경설정",
         href: "/settings",
         isActive: segments[0] === "settings",
         icon: <Settings width={18} />,
