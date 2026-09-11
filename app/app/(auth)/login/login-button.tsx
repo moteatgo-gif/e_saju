@@ -34,23 +34,26 @@ export default function LoginButton() {
 
   return (
     <div className="space-y-4">
-      <form onSubmit={handleAdminLogin} className="space-y-3">
+      <form onSubmit={handleAdminLogin} className="space-y-4">
         <div>
+          <label className="mb-1.5 block text-xs font-medium text-white/70">
+            관리자 마스터 비밀번호
+          </label>
           <input
             type="password"
-            placeholder="관리자 비밀번호 (기본: 1234)"
+            placeholder="비밀번호를 입력하세요 (기본: 1234)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-md border border-stone-200 px-3 py-2 text-sm text-black placeholder-stone-400 focus:border-black focus:outline-none dark:border-stone-700 dark:bg-stone-900 dark:text-white"
+            className="w-full rounded-xl border border-white/10 bg-[#0d0f12] px-4 py-3 text-sm text-white placeholder-white/30 focus:border-seal-red focus:ring-1 focus:ring-seal-red focus:outline-none"
             required
           />
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-md bg-black py-2 text-sm font-semibold text-white transition hover:bg-stone-800 dark:bg-white dark:text-black dark:hover:bg-stone-200"
+          className="w-full rounded-xl bg-seal-red py-3 text-sm font-bold text-white transition hover:bg-red-700 active:scale-[0.99] shadow-lg shadow-seal-red/20"
         >
-          {loading ? <LoadingDots color="#ffffff" /> : "관리자 바로 로그인"}
+          {loading ? <LoadingDots color="#ffffff" /> : "관리자 바로 입장 ➔"}
         </button>
       </form>
 
