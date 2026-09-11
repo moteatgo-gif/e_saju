@@ -10,12 +10,16 @@ export default function LoginButton() {
   const [loading, setLoading] = useState(false);
 
   // Get error message added by next/auth in URL.
-  const searchParams = useSearchParams();
-  const error = searchParams?.get("error");
+  let error: string | null = null;
+  try {
+    const searchParams = useSearchParams();
+    error = searchParams?.get("error") || null;
+  } catch(e) {}
 
   useEffect(() => {
-    const errorMessage = Array.isArray(error) ? error.pop() : error;
-    errorMessage && toast.error(errorMessage);
+    if (error) {
+      toast.error(error);
+    }
   }, [error]);
 
   const [password, setPassword] = useState("");

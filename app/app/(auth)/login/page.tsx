@@ -2,6 +2,8 @@ import Image from "next/image";
 import LoginButton from "./login-button";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
   return (
     <div className="relative min-h-screen w-full bg-[#0d0f12] text-[#f5f5f5]">
